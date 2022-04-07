@@ -23,7 +23,15 @@ function App() {
             <input type='submit' className='rounded-lg text-white bg-blue-500 hover:bg-blue-400 px-6 py-2 cursor-pointer' value="Registration" />
           </div>
         </form>
+
+        <div className='flex mt-10 justify-around'>
+          <button className='p-2 rounded-lg bg-blue-500 hover:bg-blue-400 text-white text-lg'>Google</button>
+          <button className='p-2 rounded-lg bg-blue-500 hover:bg-blue-400 text-white text-lg'>Facebook</button>
+          <button className='p-2 rounded-lg bg-blue-500 hover:bg-blue-400 text-white text-lg'>Github</button>
+        </div>
       </div>
+
+
     </div>
   );
 }
