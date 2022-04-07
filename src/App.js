@@ -1,5 +1,5 @@
 import app from './firebase.init';
-import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { getAuth, GithubAuthProvider, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { useState } from 'react';
 const auth = getAuth(app);
 function App() {
@@ -7,6 +7,7 @@ function App() {
   console.log('this is state', user)
 
   const googleProvider = new GoogleAuthProvider();
+  const githubProvider = new GithubAuthProvider();
   const handelSignInGoogle = () => {
     signInWithPopup(auth, googleProvider)
       .then(result => {
@@ -16,6 +17,17 @@ function App() {
       })
       .catch(error => {
         console.log(error);
+      })
+  }
+
+
+  const handelSignInGithub = () => {
+    signInWithPopup(auth, githubProvider)
+      .then(result => {
+        setUser(result.user);
+      })
+      .catch(error => {
+        console.error(error);
       })
   }
 
@@ -42,7 +54,7 @@ function App() {
         <div className='flex mt-10 justify-around'>
           <button onClick={handelSignInGoogle} className='p-2 rounded-lg bg-blue-500 hover:bg-blue-400 text-white text-lg'>Google</button>
           <button className='p-2 rounded-lg bg-blue-500 hover:bg-blue-400 text-white text-lg'>Facebook</button>
-          <button className='p-2 rounded-lg bg-blue-500 hover:bg-blue-400 text-white text-lg'>Github</button>
+          <button onClick={handelSignInGithub} className='p-2 rounded-lg bg-blue-500 hover:bg-blue-400 text-white text-lg'>Github</button>
         </div>
       </div>
 
