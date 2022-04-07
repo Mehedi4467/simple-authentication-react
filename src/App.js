@@ -1,12 +1,13 @@
 import app from './firebase.init';
-import { createUserWithEmailAndPassword, FacebookAuthProvider, getAuth, GithubAuthProvider, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { createUserWithEmailAndPassword, FacebookAuthProvider, getAuth, GithubAuthProvider, GoogleAuthProvider, signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
 import { useState } from 'react';
 const auth = getAuth(app);
 function App() {
   const [user, setUser] = useState({});
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  console.log('this is state', user)
+  const [reged, setReged] = useState(false);
+
 
   const googleProvider = new GoogleAuthProvider();
   const githubProvider = new GithubAuthProvider();
@@ -55,20 +56,39 @@ function App() {
 
 
   const submitButton = (e) => {
-    createUserWithEmailAndPassword(auth, email, password)
-      .then(result => {
-        const user = result.user;
+    if (reged) {
+      signInWithEmailAndPassword(auth, email, password)
+        .then(result => {
+          const user = result.user;
+          setUser(user);
+        })
+        .catch(error => {
+          console.error(error);
+        })
+    }
+    else {
+      createUserWithEmailAndPassword(auth, email, password)
+        .then(result => {
+          const user = result.user;
 
-        console.log(user);
-      })
-      .catch(error => {
-        console.error(error);
-      })
+          console.log(user);
+        })
+        .catch(error => {
+          console.error(error);
+        })
+    }
 
     e.preventDefault();
 
 
   }
+
+  const toggleBtn = (toggleId) => {
+    setReged(toggleId);
+
+  }
+
+  console.log(reged);
 
   return (
     <div>
@@ -84,9 +104,9 @@ function App() {
             <p className='text-xl mb-2 font-bold text-blue-400'>Password :</p>
             <input onBlur={passwordInput} className="w-1/2 border-2 px-4 py-1 border-blue-100 outline-blue-300 rounded-lg" type="password" placeholder='Your Password' />
           </div>
-          <p className='my-1'>Are You already member? <span className='text-blue-400 hover:text-blue-500 cursor-pointer'>Login</span></p>
+          <p className='my-1'>{reged ? 'New User?' : 'Are You already member?'} <span onClick={() => toggleBtn(!reged)} className='text-blue-400 hover:text-blue-500 cursor-pointer'>{reged ? 'Registration' : 'Login'}</span></p>
           <div className='mt-2'>
-            <input onClick={submitButton} type='submit' className='rounded-lg text-white bg-blue-500 hover:bg-blue-400 px-6 py-2 cursor-pointer' value="Registration" />
+            <input onClick={submitButton} type='submit' className='rounded-lg text-white bg-blue-500 hover:bg-blue-400 px-6 py-2 cursor-pointer' value={reged ? 'Login' : 'Registration'} />
           </div>
         </form>
 
