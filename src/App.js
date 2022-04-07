@@ -1,13 +1,16 @@
 import app from './firebase.init';
-import { getAuth, GithubAuthProvider, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { createUserWithEmailAndPassword, FacebookAuthProvider, getAuth, GithubAuthProvider, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { useState } from 'react';
 const auth = getAuth(app);
 function App() {
   const [user, setUser] = useState({});
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   console.log('this is state', user)
 
   const googleProvider = new GoogleAuthProvider();
   const githubProvider = new GithubAuthProvider();
+  const facebookProvider = new FacebookAuthProvider();
   const handelSignInGoogle = () => {
     signInWithPopup(auth, googleProvider)
       .then(result => {
@@ -31,6 +34,42 @@ function App() {
       })
   }
 
+  const handelSignInFacebook = () => {
+    signInWithPopup(auth, facebookProvider)
+      .then(result => {
+        setUser(result.user);
+      })
+      .catch(error => {
+        console.error(error);
+      })
+  }
+
+
+  const emailInput = (event) => {
+    setEmail(event.target.value);
+  }
+
+  const passwordInput = (event) => {
+    setPassword(event.target.value);
+  }
+
+
+  const submitButton = (e) => {
+    createUserWithEmailAndPassword(auth, email, password)
+      .then(result => {
+        const user = result.user;
+
+        console.log(user);
+      })
+      .catch(error => {
+        console.error(error);
+      })
+
+    e.preventDefault();
+
+
+  }
+
   return (
     <div>
       <h1 className='text-2xl text-blue-500 font-bold text-center'>Welcome to Registration!!</h1>
@@ -38,22 +77,22 @@ function App() {
         <form action="">
           <div className="">
             <p className='text-xl mb-2 font-bold text-blue-400'>Email :</p>
-            <input className=" w-1/2 border-2  px-4 py-1 border-blue-100 outline-blue-300 rounded-lg" type="text" placeholder='Your Email' />
+            <input onBlur={emailInput} className=" w-1/2 border-2  px-4 py-1 border-blue-100 outline-blue-300 rounded-lg" type="text" placeholder='Your Email' />
           </div>
 
           <div className="mt-3">
             <p className='text-xl mb-2 font-bold text-blue-400'>Password :</p>
-            <input className="w-1/2 border-2 px-4 py-1 border-blue-100 outline-blue-300 rounded-lg" type="password" placeholder='Your Password' />
+            <input onBlur={passwordInput} className="w-1/2 border-2 px-4 py-1 border-blue-100 outline-blue-300 rounded-lg" type="password" placeholder='Your Password' />
           </div>
           <p className='my-1'>Are You already member? <span className='text-blue-400 hover:text-blue-500 cursor-pointer'>Login</span></p>
           <div className='mt-2'>
-            <input type='submit' className='rounded-lg text-white bg-blue-500 hover:bg-blue-400 px-6 py-2 cursor-pointer' value="Registration" />
+            <input onClick={submitButton} type='submit' className='rounded-lg text-white bg-blue-500 hover:bg-blue-400 px-6 py-2 cursor-pointer' value="Registration" />
           </div>
         </form>
 
         <div className='flex mt-10 justify-around'>
           <button onClick={handelSignInGoogle} className='p-2 rounded-lg bg-blue-500 hover:bg-blue-400 text-white text-lg'>Google</button>
-          <button className='p-2 rounded-lg bg-blue-500 hover:bg-blue-400 text-white text-lg'>Facebook</button>
+          <button onClick={handelSignInFacebook} className='p-2 rounded-lg bg-blue-500 hover:bg-blue-400 text-white text-lg'>Facebook</button>
           <button onClick={handelSignInGithub} className='p-2 rounded-lg bg-blue-500 hover:bg-blue-400 text-white text-lg'>Github</button>
         </div>
       </div>
